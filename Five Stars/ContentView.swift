@@ -9,29 +9,49 @@ import SwiftUI
 
 struct ContentView: View {
     @State private var searchText = ""
+    @State private var selectedTab = 0
     var body: some View {
         VStack {
             NavigationStack {
                 
             }
             .searchable(text: $searchText, prompt: "Search")
-            TabView {
-                Tab {
-                    HomeScreenView()
-                } label: {
-                    Image("home")
-                }
-                Tab {
-                    WardrobeView()
-                } label: {
-                    Image("Wardrobe")
-                }
-                Tab {
-                    MagicView()
-                } label: {
-                    Image("spark")
-                }
+            TabView(selection: $selectedTab) {
+                // Home Tab
+                HomeScreenView()
+                    .tabItem {
+                        Image("home")
+                            .renderingMode(.template)
+                            .foregroundColor(selectedTab == 0 ? .navSelected : .navDefault) // Change color based on selection
+                        Text("Home")
+                    }
+                    .tag(0)
+                
+                // Wardrobe Tab
+                WardrobeView()
+                    .tabItem {
+                        Image("Wardrobe")
+                            .renderingMode(.template)
+                            .foregroundColor(selectedTab == 1 ? .navSelected : .navDefault) // Change color based on selection
+                        Text("Wardrobe")
+                    }
+                    .tag(1)
+                
+                // Magic Tab
+                MagicView()
+                    .tabItem {
+                        Image("spark")
+                            .renderingMode(.template)
+                            .foregroundColor(selectedTab == 2 ? .navSelected : .navDefault) // Change color based on selection
+                        Text("Magic")
+                    }
+                    .tag(2)
             }
+            .accentColor(.navSelected)
+            .toolbarBackground(.visible, for: .navigationBar)
+            .accentColor(.navSelected)
+            .accentColor(.green)
+            .foregroundColor(.green)
         }
     }
 }
