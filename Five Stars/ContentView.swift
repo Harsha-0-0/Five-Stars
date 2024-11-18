@@ -17,7 +17,7 @@ struct ContentView: View {
             .searchable(text: $searchText, prompt: "Search")
             TabView {
                 Tab {
-                    HomeView()
+                    HomeScreenView()
                 } label: {
                     Image("home")
                 }
@@ -36,7 +36,7 @@ struct ContentView: View {
     }
 }
 
-struct HomeView: View {
+struct HomeScreenView: View {
     var body: some View {
         Text("Home")
     }
