@@ -6,7 +6,7 @@ struct AI_View: View {
     //    @State private var AI_response: GenerateContentResponse?
     @State private var analyzedResult:  [CandidateResponse] = []
     @State private var isAnalyzing: Bool = false
-    let model = GenerativeModel(name: "gemini-1.5-flash", apiKey: "AIzaSyDu1cqIHQxGV9TcNG4L6jYejhuE_rGZkyk")
+    let model = GenerativeModel(name: "gemini-1.5-flash", apiKey: "key")
     @State private var selectedItem: PhotosPickerItem?
     @State private var selectedImage: Image?
     
