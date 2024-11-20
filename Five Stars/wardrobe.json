@@ -1,0 +1,39 @@
+{
+  "wardrobe": {
+    "dress": [
+      { "name": "dress_01", "description": "Elegant evening dress", "color": "gray" },
+      { "name": "dress_02", "description": "Summer casual dress", "color": "yellow" },
+      { "name": "dress_03", "description": "Formal office dress", "color": "yellow" }
+    ],
+    "jackets": [
+      { "name": "jacket_01", "description": "Winter coat", "color": "navy" },
+      { "name": "jacket_02", "description": "Light windbreaker", "color": "beige" },
+      { "name": "jacket_03", "description": "Casual jacket", "color": "black" }
+    ],
+    "pants": [
+      { "name": "pants_01", "description": "Blue jeans", "color": "green" },
+      { "name": "pants_02", "description": "Khaki trousers", "color": "white" },
+      { "name": "pants_03", "description": "Formal pants", "color": "blue" },
+      { "name": "pants_04", "description": "Sporty joggers", "color": "brown" },
+      { "name": "pants_05", "description": "Summer shorts", "color": "black" },
+      { "name": "pants_06", "description": "Formal pants", "color": "white" },
+      { "name": "pants_07", "description": "Sporty joggers", "color": "green"},
+      { "name": "pants_08", "description": "Summer shorts", "color": "black" }
+    ],
+    "shirts": [
+      { "name": "shirt_01", "description": "White T-shirt", "color": "white" },
+      { "name": "shirt_02", "description": "Brown casual shirt", "color": "brown" },
+      { "name": "shirt_03", "description": "Formal dress shirt", "color": "brown" }
+    ],
+    "shoes": [
+      { "name": "shoes_01", "description": "loafers", "color": "black" }
+    ],
+    "TShirts": [
+      { "name": "Tshirt_01", "description": "T-Shirt", "color": "white" },
+      { "name": "Tshirt_02", "description": "T-Shirt", "color": "green" },
+      { "name": "Tshirt_03", "description": "T-Shirt", "color": "brown" },
+      { "name": "Tshirt_04", "description": "T-Shirt", "color": "white" },
+      { "name": "Tshirt_05", "description": "T-Shirt", "color": "gray" }
+    ]
+  }
+}
