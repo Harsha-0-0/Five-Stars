@@ -28,7 +28,7 @@ struct AI_View: View {
         imageRenderer4.scale = 1.0
         guard let uiImage4 = imageRenderer4.uiImage else { return }
         
-        let model = GenerativeModel(name: "gemini-1.5-pro", apiKey: "AIzaSyDu1cqIHQxGV9TcNG4L6jYejhuE_rGZkyk")
+        let model = GenerativeModel(name: "gemini-1.5-pro", apiKey: "key")
         let prompt = "can you generate an outfit image from these pictures? I just want one outfit. Also return the name of the images you used to create the outfit."
         
         Task {
