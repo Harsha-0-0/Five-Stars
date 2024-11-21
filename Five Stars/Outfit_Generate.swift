@@ -1,196 +1,205 @@
-//
-//  Outfit_Generate.swift
-//  Five Stars
-//
-//  Created by Harsha Varthini Maniraj on 20/11/2024.
-//
-
 import SwiftUI
 
+// MARK: - Data Models
 struct Cloth: Identifiable {
     var id = UUID()
     var image: Image
     var isSelected: Bool = false
 }
-struct Outfit_Generate: View {
-    @State var clothingItems: [Cloth] = [
-        Cloth(image: Image("shirt_01"), isSelected: false),
-        Cloth(image: Image("shirt_02"), isSelected: false),
-        Cloth(image: Image("shirt_03"), isSelected: false),
-        // ... add more clothing items as needed
-    ]
-    @State var pants: [Cloth] = [
-        Cloth(image: Image("pants_01"), isSelected: false),
-        Cloth(image: Image("pants_02"), isSelected: false),
-        Cloth(image: Image("pants_03"), isSelected: false),
-        // ... add more clothing items as needed
-    ]
-    @State var shoes: [Cloth] = [
-        Cloth(image: Image("shoes_01"), isSelected: false),
-        Cloth(image: Image("shoes_01"), isSelected: false),
-        Cloth(image: Image("shoes_01"), isSelected: false),
-        // ... add more clothing items as needed
-    ]
-    @State private var currentCloth: Cloth?
-    @State private var currentPant: Cloth?
-    @State private var currentShoe: Cloth?
-    @State private var selectedItem: Cloth?
-    @State private var showSwapOptions: Bool = false
-    @State private var showSwapPantOptions: Bool = false
-    @State private var showSwapShoeOptions: Bool = false
+
+struct Item: Codable {
+    let name: String
+    let description: String
+    let color: String
+}
+
+struct Wardrobe: Codable {
+    let dress: [Item]
+    let jackets: [Item]
+    let pants: [Item]
+    let shirts: [Item]
+    let shoes: [Item]
+    let TShirts: [Item]
+}
+
+struct WardrobeData: Codable {
+    let wardrobe: Wardrobe
+}
+
+// MARK: - Model
+class Model: ObservableObject {
+    @Published var tops: [Item] = []
+    @Published var pants: [Item] = []
+    @Published var shoes: [Item] = []
+    @Published var topImage: [Cloth] = []
+    @Published var pantsImage: [Cloth] = []
+    @Published var shoesImage: [Cloth] = []
     
+    func loadWardrobeData() -> Wardrobe? {
+        if let path = Bundle.main.path(forResource: "wardrobe", ofType: "json"),
+           let data = try? Data(contentsOf: URL(fileURLWithPath: path)) {
+            let decoder = JSONDecoder()
+            return try? decoder.decode(WardrobeData.self, from: data).wardrobe
+        }
+        return nil
+    }
+    
+    func loadAllCategories() {
+        if let wardrobe = loadWardrobeData() {
+            pants = wardrobe.pants
+            pantsImage = pants.map { Cloth(image: Image($0.name)) }
+            tops = wardrobe.TShirts
+            topImage = tops.map { Cloth(image: Image($0.name)) }
+            shoes = wardrobe.shoes
+            shoesImage = shoes.map { Cloth(image: Image($0.name)) }
+        }
+    }
+}
+
+// MARK: - Main View
+struct Outfit_Generate: View {
+    @StateObject var model = Model()
+    
+    @State var currentCloth: Cloth? = nil
+    @State var currentPant: Cloth? = nil
+    @State var currentShoe: Cloth? = nil
+    @State var showSwapTopOptions: Bool = false
+    @State var showSwapPantOptions: Bool = false
+    @State var showSwapShoeOptions: Bool = false
     
     var body: some View {
         GeometryReader { geometry in
             VStack {
                 Text("AI Dresser")
-                    .font(.title)
-                    .padding(.top)
-                
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                    .padding(.top, 20)
+                Spacer()
                 Text("Shuffle with the Button, or Manually Swap Specific Pieces by Selecting")
-                    .font(.headline)
+                    .font(.title3)
                     .foregroundStyle(.navDefault)
                     .multilineTextAlignment(.center)
-                    .padding()
+                    .padding(.horizontal, 20)
+                    .lineLimit(2)
                 
-                Spacer()
+                Spacer().frame(height: 20)
                 
+                // Dynamic Rectangle and Buttons
                 ZStack {
-                    Rectangle().fill(.yellowBg)
-                    VStack() {
-                        // Button to randomly pick a clothing item
-                        Button {
-                            // Randomly pick a clothing item
-                            currentCloth = clothingItems.randomElement()
+                    let rectangleHeight: CGFloat = showSwapTopOptions || showSwapPantOptions || showSwapShoeOptions ? 400 : 550
+                    
+                    Rectangle()
+                        .fill(.yellowBg)
+                        .frame(width: 350, height: rectangleHeight)
+                        .cornerRadius(10)
+                    
+                    GeometryReader { innerGeometry in
+                        VStack(spacing: -70) {
+                            let buttonHeight = rectangleHeight / 2.8
                             
-                            // Ensure currentCloth is not nil
-                            guard let currentCloth = currentCloth else { return }
-                            
-                            // Find the index of the current cloth
-                            if let index = clothingItems.firstIndex(where: { $0.id == currentCloth.id }) {
-                                // Update the isSelected property of the item
-                                clothingItems[index].isSelected.toggle()
-                                
-                                // Optionally update other state variables
-                                selectedItem = clothingItems[index]
-                                showSwapOptions = true
+                            // Button for shirts
+                            Button {
+                                showSwapTopOptions.toggle()
+                            } label: {
+                                currentCloth?.image
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(height: buttonHeight)
+                                    .clipShape(Rectangle())
                             }
-                        } label: {
-                            currentCloth?.image
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 200, height: 200)
-                                .padding()
-                                .frame(width: min(geometry.size.width * 0.7, 200), height: min(geometry.size.height * 0.3, 200))
-                            
-                            
-                        }
-                        
-                        .onAppear {
-                            // Optionally show a random item when the view appears
-                            currentCloth = clothingItems.randomElement()
-                        }
-                        
-                        
-                        
-                        // Button to randomly pick a clothing item
-                        Button () {
-                          
-                            showSwapPantOptions = true
-                            
-                            //                            }
-                        } label: {
-                            @State var current = pants.randomElement()
-                            current?.image
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 200, height: 200)
-                                .padding()
-                                .frame(width: min(geometry.size.width * 0.7, 200), height: min(geometry.size.height * 0.3, 200))
-                            
-                            
-                        }
-                        
-                        .onAppear {
-                            // Optionally show a random item when the view appears
-                            currentPant = pants.randomElement()
-                        }
-                        
-                        
-                        
-                        // Button to randomly pick a clothing item
-                        Button {
-                            // Randomly pick a clothing item
-                            currentShoe = shoes.randomElement()
-                            
-                            // Ensure currentCloth is not nil
-                            guard let currentShoe = currentShoe else { return }
-                            
-                            // Find the index of the current cloth
-                            if let index = shoes.firstIndex(where: { $0.id == currentShoe.id }) {
-                                // Update the isSelected property of the item
-                                shoes[index].isSelected.toggle()
-                                
-                                // Optionally update other state variables
-                                selectedItem = shoes[index]
-                                showSwapShoeOptions = true
+                            .onAppear {
+                                model.loadAllCategories()
+                                currentCloth = model.topImage.randomElement()
                             }
-                        } label: {
-                            currentShoe?.image
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 200, height: 200)
-                                .padding()
-                                .frame(width: min(geometry.size.width * 0.7, 200), height: min(geometry.size.height * 0.3, 200))
                             
+                            // Button for pants
+                            Button {
+                                showSwapPantOptions.toggle()
+                            } label: {
+                                currentPant?.image
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(height: buttonHeight)
+                                    .clipShape(Rectangle())
+                            }
+                            .onAppear {
+                                model.loadAllCategories()
+                                currentPant = model.pantsImage.randomElement()
+                            }
                             
-                        }
-                        
-                        .onAppear {
-                            // Optionally show a random item when the view appears
-                            currentShoe = shoes.randomElement()
-                        }
-                        if showSwapOptions && !showSwapPantOptions && !showSwapShoeOptions{
-                            SwapOptionsView(selectedItem: $selectedItem, clothingItems: $clothingItems) {
-                                showSwapOptions = false
+                            // Button for shoes
+                            Button {
+                                showSwapShoeOptions.toggle()
+                            } label: {
+                                currentShoe?.image
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(height: buttonHeight)
+                                    .clipShape(Rectangle())
+                            }
+                            .onAppear {
+                                model.loadAllCategories()
+                                currentShoe = model.shoesImage.randomElement()
                             }
                         }
-                        else if showSwapPantOptions && !showSwapOptions && !showSwapShoeOptions{
-                            SwapPantsView(pants: $pants, clothingItems: $pants) {
-                                showSwapPantOptions = false
-                            }
-                        }
-                        else if showSwapShoeOptions && !showSwapPantOptions && !showSwapOptions{
-                            SwapShoesView(selectedItem: $selectedItem, clothingItems: $shoes){
-                                showSwapShoeOptions = false
-                            }
-                        }
+                        .frame(width: innerGeometry.size.width, height: innerGeometry.size.height)
                     }
-                    
-                    
-                }.frame(maxHeight: geometry.size.height)
+                }
+                .animation(.easeInOut, value: showSwapTopOptions || showSwapPantOptions || showSwapShoeOptions)
                 
+                // Swap Views
+                if showSwapTopOptions {
+                    SwapTopView(
+                        tops: $model.topImage,
+                        onDismiss: { showSwapTopOptions = false },
+                        onSelectTop: { newTop in
+                            currentCloth = newTop
+                        }
+                    )
+                    .transition(.move(edge: .bottom))
+                }
+                
+                if showSwapPantOptions {
+                    SwapPantsView(
+                        pants: $model.pantsImage,
+                        onDismiss: { showSwapPantOptions = false },
+                        onSelectPant: { newPant in
+                            currentPant = newPant
+                        }
+                    )
+                    .transition(.move(edge: .bottom))
+                }
+                
+                if showSwapShoeOptions {
+                    SwapShoeView(
+                        shoes: $model.shoesImage,
+                        onDismiss: { showSwapShoeOptions = false },
+                        onSelectShoe: { newShoe in
+                            currentShoe = newShoe
+                        }
+                    )
+                    .transition(.move(edge: .bottom))
+                }
                 
                 Spacer(minLength: 30)
+                
+                // Restart and Shuffle Buttons
                 HStack(spacing: 20) {
                     Button {
-                        // Implement restart logic here
+                        currentCloth = nil
+                        currentPant = nil
+                        currentShoe = nil
                     } label: {
                         Label("Restart", systemImage: "arrow.clockwise")
                             .labelStyle(CustomTextBeforeIconStyle())
-                        
-                            .foregroundStyle(.black)
-                        
                     }
-                    
                     .buttonStyle(.borderedProminent)
-                    
                     .clipShape(Capsule())
+                    
                     Button {
-                        // Implement shuffle logic here
-                        currentCloth = clothingItems.randomElement()
-                        currentPant = pants.randomElement()
-                        currentShoe = shoes.randomElement()
+                        currentCloth = model.topImage.randomElement()
+                        currentPant = model.pantsImage.randomElement()
+                        currentShoe = model.shoesImage.randomElement()
                     } label: {
                         Label("Shuffle", systemImage: "shuffle")
                             .labelStyle(CustomTextBeforeIconStyle())
@@ -199,72 +208,20 @@ struct Outfit_Generate: View {
                     .clipShape(Capsule())
                 }
                 .padding(.bottom)
-                .scaledToFit()
-                
-                
             }
             .frame(maxHeight: geometry.size.height)
-            
         }
-        
     }
 }
-struct SwapOptionsView: View {
-    @Binding var selectedItem: Cloth?
-    @Binding var clothingItems: [Cloth]
-    @Environment(\.dismiss) var dismiss
-    var onDismiss: () -> Void
-    
-    var body: some View {
-        VStack {
-            
-            HStack {
-                Text("Swap it with...")
-                    .font(.title2)
-                    .padding()
-                Button {
-                    onDismiss()
-                }label:{
-                    Image(systemName: "xmark.circle.fill")
-                }
-            }
-            
-            ScrollView(.horizontal) {
-                HStack(spacing: 20) {
-                    ForEach(clothingItems, id: \.id) { item in
-                        if item.id != selectedItem?.id {
-                            Button {
-                                // Implement swap logic here, updating the selectedItem's image
-                            } label: {
-                                item.image
-                                    .resizable()
-                                    .frame(width: 100, height: 100)
-                                    .cornerRadius(10)
-                            }
-                        }
-                    }
-                }
-                .padding(.horizontal)
-                
-            }
-            
-        }
-        
-        .padding()
-        
-        .background(Color.gray.opacity(0.2))
-        
-        .cornerRadius(10)
-        
-    }
-}
+
+
+
+
+// MARK: - Swap Pants View
 struct SwapPantsView: View {
     @Binding var pants: [Cloth]
-    @Binding var clothingItems: [Cloth]
-    @Environment(\.dismiss) var dismiss
     var onDismiss: () -> Void
-    
-    
+    var onSelectPant: (Cloth) -> Void
     
     var body: some View {
         VStack {
@@ -272,54 +229,42 @@ struct SwapPantsView: View {
                 Text("Swap it with...")
                     .font(.title2)
                     .padding()
+                
                 Button {
                     onDismiss()
-                }label:{
+                } label: {
                     Image(systemName: "xmark.circle.fill")
                 }
             }
             
             ScrollView(.horizontal) {
-                HStack(spacing: 20) {
-                    var selectedItem = pants.randomElement()
-                    ForEach(clothingItems, id: \.id) { item in
-                        if item.id != selectedItem?.id {
-                            Button {
-                                // Ensure both selectedItem and clothingItems are not nil
-                                guard let selectedPant = selectedItem else { return }
-                                
-                                // Find the index of the selected pant
-                                if let selectedIndex = clothingItems.firstIndex(where: { $0.id == selectedPant.id }) {
-                                    // Swap logic: Replace the selected item with the chosen item
-                                    clothingItems[selectedIndex] = item
-                                    // Update selectedItem to reflect the new choice
-                                    selectedItem = item
-                                    // Call onDismiss to close the view
-                                    onDismiss()
-                                }
-                            } label: {
-                                item.image
-                                    .resizable()
-                                    .frame(width: 100, height: 100)
-                                    .cornerRadius(10)
-                            }
+                HStack {
+                    ForEach(pants) { pant in
+                        Button {
+                            // Call the onSelectPant closure to swap the pant
+                            onSelectPant(pant)
+                            onDismiss()
+                        } label: {
+                            pant.image
+                                .resizable()
+                                .frame(width: 100, height: 100)
+                                .cornerRadius(10)
                         }
                     }
                 }
-                .padding(.horizontal)
+                .padding()
             }
-            
         }
-        .padding()
         .background(Color.gray.opacity(0.2))
         .cornerRadius(10)
     }
 }
-struct SwapShoesView: View {
-    @Binding var selectedItem: Cloth?
-    @Binding var clothingItems: [Cloth]
-    @Environment(\.dismiss) var dismiss
+
+// MARK: - Swap Top View
+struct SwapTopView: View {
+    @Binding var tops: [Cloth]
     var onDismiss: () -> Void
+    var onSelectTop: (Cloth) -> Void
     
     var body: some View {
         VStack {
@@ -327,37 +272,81 @@ struct SwapShoesView: View {
                 Text("Swap it with...")
                     .font(.title2)
                     .padding()
+                
                 Button {
                     onDismiss()
-                }label:{
+                } label: {
                     Image(systemName: "xmark.circle.fill")
                 }
             }
             
             ScrollView(.horizontal) {
-                HStack(spacing: 20) {
-                    ForEach(clothingItems, id: \.id) { item in
-                        if item.id != selectedItem?.id {
-                            Button {
-                                // Implement swap logic here, updating the selectedItem's image
-                            } label: {
-                                item.image
-                                    .resizable()
-                                    .frame(width: 100, height: 100)
-                                    .cornerRadius(10)
-                            }
+                HStack {
+                    ForEach(tops) { top in
+                        Button {
+                            // Call the onSelectTop closure to swap the top
+                            onSelectTop(top)
+                            onDismiss()
+                        } label: {
+                            top.image
+                                .resizable()
+                                .frame(width: 100, height: 100)
+                                .cornerRadius(10)
                         }
                     }
                 }
-                .padding(.horizontal)
+                .padding()
             }
-            
         }
-        .padding()
         .background(Color.gray.opacity(0.2))
         .cornerRadius(10)
     }
 }
+
+// MARK: - Swap Shoe View
+struct SwapShoeView: View {
+    @Binding var shoes: [Cloth]
+    var onDismiss: () -> Void
+    var onSelectShoe: (Cloth) -> Void
+    
+    var body: some View {
+        VStack {
+            HStack {
+                Text("Swap it with...")
+                    .font(.title2)
+                    .padding()
+                
+                Button {
+                    onDismiss()
+                } label: {
+                    Image(systemName: "xmark.circle.fill")
+                }
+            }
+            
+            ScrollView(.horizontal) {
+                HStack {
+                    ForEach(shoes) { shoe in
+                        Button {
+                            // Call the onSelectShoe closure to swap the shoe
+                            onSelectShoe(shoe)
+                            onDismiss()
+                        } label: {
+                            shoe.image
+                                .resizable()
+                                .frame(width: 100, height: 100)
+                                .cornerRadius(10)
+                        }
+                    }
+                }
+                .padding()
+            }
+        }
+        .background(Color.gray.opacity(0.2))
+        .cornerRadius(10)
+    }
+}
+
+// MARK: - Custom Label Style
 struct CustomTextBeforeIconStyle: LabelStyle {
     func makeBody(configuration: Configuration) -> some View {
         HStack {
@@ -367,6 +356,7 @@ struct CustomTextBeforeIconStyle: LabelStyle {
     }
 }
 
+// MARK: - Preview
 #Preview {
     Outfit_Generate()
 }
