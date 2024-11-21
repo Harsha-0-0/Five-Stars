@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		3A4353F82CEDACA700F6E0B1 /* GoogleGenerativeAI in Frameworks */ = {isa = PBXBuildFile; productRef = 3A4353F72CEDACA700F6E0B1 /* GoogleGenerativeAI */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		3A4353772CEAC49600F6E0B1 /* Five Stars.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Five Stars.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -23,6 +27,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3A4353F82CEDACA700F6E0B1 /* GoogleGenerativeAI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,6 +70,7 @@
 			);
 			name = "Five Stars";
 			packageProductDependencies = (
+				3A4353F72CEDACA700F6E0B1 /* GoogleGenerativeAI */,
 			);
 			productName = "Five Stars";
 			productReference = 3A4353772CEAC49600F6E0B1 /* Five Stars.app */;
@@ -94,6 +100,9 @@
 			);
 			mainGroup = 3A43536E2CEAC49600F6E0B1;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				3A4353F62CEDACA700F6E0B1 /* XCRemoteSwiftPackageReference "generative-ai-swift" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 3A4353782CEAC49600F6E0B1 /* Products */;
 			projectDirPath = "";
@@ -322,6 +331,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		3A4353F62CEDACA700F6E0B1 /* XCRemoteSwiftPackageReference "generative-ai-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/google/generative-ai-swift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.5.6;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		3A4353F72CEDACA700F6E0B1 /* GoogleGenerativeAI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3A4353F62CEDACA700F6E0B1 /* XCRemoteSwiftPackageReference "generative-ai-swift" */;
+			productName = GoogleGenerativeAI;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 3A43536F2CEAC49600F6E0B1 /* Project object */;
 }
