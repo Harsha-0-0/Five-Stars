@@ -66,11 +66,11 @@ struct WardrobeView: View {
         Text("Wardrobe")
     }
 }
-struct MagicView: View {
-    var body: some View {
-        Text("Magic")
-    }
-}
+//struct MagicView: View {
+//    var body: some View {
+//        Text("Magic")
+//    }
+//}
 
 #Preview {
     ContentView()
