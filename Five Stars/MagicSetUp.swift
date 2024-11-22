@@ -8,18 +8,21 @@ import SwiftUI
 
 
 struct AIDresserView: View {
-    
-//    var initStep: Int = 3
     @State private var currentStep: Int = 1 // Track the current step
-
-    
+    @State private var navigationPath: [Int] = [] // Track navigation history
     var body: some View {
-        VStack(spacing: 32) {
-//            PageChanger(initStep)
-            PageChanger(currentStep)
+        
+        NavigationStack(path: $navigationPath) {
+            // Show the initial content based on the step
+            ContentChooser(step: currentStep, navigationPath: $navigationPath)
+                .navigationDestination(for: Int.self) { step in
+                    ContentChooser(step: step, navigationPath: $navigationPath)
+                }
             Spacer()
         }
+        
     }
+    
 }
 
 
@@ -31,6 +34,8 @@ struct AIDresserStepView: View {
     init(step: Int) {
            self.step = step
            self.subtitle = GetStepSubtitle(step) // Compute subtitle based on step
+        print("Navigating to step \(step)")
+        
        }
     
     var body: some View {
@@ -43,6 +48,7 @@ struct AIDresserStepView: View {
                 .foregroundColor(.gray)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 60)
+                .frame(maxWidth: .infinity, alignment: .center)
             
         }
         .padding(.top, 40)
@@ -108,6 +114,7 @@ struct AIDresserStepView: View {
 struct AIDresser1Content: View {
     
     @State var clothesArray: [Image] = []
+    @Binding var navigationPath: [Int]
     
     var body: some View {
         
@@ -155,7 +162,8 @@ struct AIDresser1Content: View {
             Button(action: {
                 // Action for "Next"
 //                print("Next pressed")
-                PageChanger(1)
+                navigationPath.append(2)
+//                PageChanger(1)
             }) {
                 Text("Next")
                     .fontWeight(.medium)
@@ -182,6 +190,9 @@ struct AIDresser2Content: View {
     let OccasionArr1 = ["Uni", "Interview", "Smart Casual"]
     let OccasionArr2 = ["Wedding", "Date", "Party"]
     let OccasionArr3 = ["Daily", "Concert", "Bar"]
+    @Environment(\.dismiss) var dismiss
+    @Binding var navigationPath: [Int]
+
     
     var body: some View {
         VStack(alignment: .leading, spacing: 12){
@@ -250,7 +261,7 @@ struct AIDresser2Content: View {
                     Button(action: {
                         // Action for "Back"
         //                print(key)
-                        
+                        dismiss()
                     }) {
                         Text("Back")
                             .fontWeight(.medium)
@@ -262,7 +273,7 @@ struct AIDresser2Content: View {
                     }
                     Button(action: {
                         // Action for "Next"
-                        print("Next pressed")
+                        navigationPath.append(3)
                     }) {
                         Text("Next")
                             .fontWeight(.medium)
@@ -284,11 +295,13 @@ struct AIDresser2Content: View {
 }
 
 struct AIDresser3Content: View {
+    @Binding var navigationPath: [Int]
+    @Environment(\.dismiss) var dismiss
     var body: some View {
         
         VStack (alignment: .leading, spacing: 40){
             
-            AIDresserStepView(step: 1)
+            AIDresserStepView(step: 3)
             Spacer()
             
             // Text Area
@@ -306,6 +319,7 @@ struct AIDresser3Content: View {
                 Button(action: {
                     // Action for "Back"
     //                print(key)
+                    dismiss()
                 }) {
                     Text("Back")
                         .fontWeight(.medium)
@@ -315,10 +329,7 @@ struct AIDresser3Content: View {
                         .background(Color("Secondary"))
                         .cornerRadius(100)
                 }
-                Button(action: {
-                    // Action for "Next"
-                    print("Next pressed")
-                }) {
+                NavigationLink(destination: Outfit_Generate()) {
                     Text("Next")
                         .fontWeight(.medium)
                         .foregroundColor(.white)
@@ -374,36 +385,37 @@ struct step3ButtonsBox: View {
 }
 
 @ViewBuilder
-func ContentChooser(_ step: Int) -> some View {
-    if step == 1 {
-        AIDresser1Content()
-    } else if step == 2 {
-        AIDresser2Content()
-    } else if step == 3 {
-        AIDresser3Content()
-    } else {
+func ContentChooser(step: Int, navigationPath: Binding<[Int]>) -> some View {
+    switch step {
+    case 1:
+        AIDresser1Content(navigationPath: navigationPath)
+    case 2:
+        AIDresser2Content(navigationPath: navigationPath)
+    case 3:
+        AIDresser3Content(navigationPath: navigationPath)
+    default:
         Text("Invalid step")
             .foregroundColor(.red)
-            .font(.headline)
     }
 }
 
 
 
-@ViewBuilder
-func PageChanger(_ step: Int) -> some View {
-    if step == 1 {
-        AIDresser1Content()
-    } else if step == 2 {
-        AIDresser2Content()
-    } else if step == 3 {
-        AIDresser3Content()
-    } else {
-        Text("Invalid step")
-            .foregroundColor(.red)
-            .font(.headline)
-    }
-}
+//
+//@ViewBuilder
+//func PageChanger(_ step: Int) -> some View {
+//    if step == 1 {
+//        AIDresser1Content()
+//    } else if step == 2 {
+//        AIDresser2Content()
+//    } else if step == 3 {
+//        AIDresser3Content()
+//    } else {
+//        Text("Invalid step")
+//            .foregroundColor(.red)
+//            .font(.headline)
+//    }
+//}
 
 #Preview {
     AIDresserView()

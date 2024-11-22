@@ -8,17 +8,15 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var searchText = ""
+    
     @State private var selectedTab = 0
     var body: some View {
         VStack {
-            NavigationStack {
-                
-            }
-            .searchable(text: $searchText, prompt: "Search")
+            
+            
             TabView(selection: $selectedTab) {
                 // Home Tab
-                HomeScreenView()
+                HomeScreen()
                     .tabItem {
                         Image("home")
                             .renderingMode(.template)
@@ -28,7 +26,7 @@ struct ContentView: View {
                     .tag(0)
                 
                 // Wardrobe Tab
-                WardrobeView()
+                FilterView()
                     .tabItem {
                         Image("Wardrobe")
                             .renderingMode(.template)
@@ -45,32 +43,21 @@ struct ContentView: View {
                             .foregroundColor(selectedTab == 2 ? .navSelected : .navDefault) // Change color based on selection
                         Text("Magic")
                     }
+                
                     .tag(2)
             }
+            
             .accentColor(.navSelected)
             .toolbarBackground(.visible, for: .navigationBar)
             .accentColor(.navSelected)
-            .accentColor(.green)
-            .foregroundColor(.green)
         }
+        
+        
     }
 }
 
-struct HomeScreenView: View {
-    var body: some View {
-        Text("Home")
-    }
-}
-struct WardrobeView: View {
-    var body: some View {
-        Text("Wardrobe")
-    }
-}
-//struct MagicView: View {
-//    var body: some View {
-//        Text("Magic")
-//    }
-//}
+
+
 
 #Preview {
     ContentView()

@@ -7,39 +7,39 @@ struct Cloth: Identifiable {
     var isSelected: Bool = false
 }
 
-struct Item: Codable {
+struct Items: Codable {
     let name: String
     let description: String
     let color: String
 }
 
-struct Wardrobe: Codable {
-    let dress: [Item]
-    let jackets: [Item]
-    let pants: [Item]
-    let shirts: [Item]
-    let shoes: [Item]
-    let TShirts: [Item]
+struct Wardrobes: Codable {
+    let dress: [Items]
+    let jackets: [Items]
+    let pants: [Items]
+    let shirts: [Items]
+    let shoes: [Items]
+    let TShirts: [Items]
 }
 
-struct WardrobeData: Codable {
-    let wardrobe: Wardrobe
+struct WardrobeDatas: Codable {
+    let wardrobe: Wardrobes
 }
 
 // MARK: - Model
 class Model: ObservableObject {
-    @Published var tops: [Item] = []
-    @Published var pants: [Item] = []
-    @Published var shoes: [Item] = []
+    @Published var tops: [Items] = []
+    @Published var pants: [Items] = []
+    @Published var shoes: [Items] = []
     @Published var topImage: [Cloth] = []
     @Published var pantsImage: [Cloth] = []
     @Published var shoesImage: [Cloth] = []
     
-    func loadWardrobeData() -> Wardrobe? {
+    func loadWardrobeData() -> Wardrobes? {
         if let path = Bundle.main.path(forResource: "wardrobe", ofType: "json"),
            let data = try? Data(contentsOf: URL(fileURLWithPath: path)) {
             let decoder = JSONDecoder()
-            return try? decoder.decode(WardrobeData.self, from: data).wardrobe
+            return try? decoder.decode(WardrobeDatas.self, from: data).wardrobe
         }
         return nil
     }
@@ -86,7 +86,7 @@ struct Outfit_Generate: View {
                 
                 // Dynamic Rectangle and Buttons
                 ZStack {
-                    let rectangleHeight: CGFloat = showSwapTopOptions || showSwapPantOptions || showSwapShoeOptions ? 400 : 550
+                    let rectangleHeight: CGFloat = showSwapTopOptions || showSwapPantOptions || showSwapShoeOptions ? 400 : 500
                     
                     Rectangle()
                         .fill(.yellowBg)
@@ -207,8 +207,10 @@ struct Outfit_Generate: View {
                     .buttonStyle(.borderedProminent)
                     .clipShape(Capsule())
                 }
+                Spacer(minLength: 60)
                 .padding(.bottom)
             }
+
             .frame(maxHeight: geometry.size.height)
         }
     }
