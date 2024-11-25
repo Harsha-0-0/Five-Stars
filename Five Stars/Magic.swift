@@ -67,29 +67,6 @@ struct MagicView: View {
     }
 }
 
-// Placeholder views for navigation
-//struct GenerateNowView: View {
-//    var body: some View {
-//        VStack {
-//            Text("Generate Now Screen")
-//                .font(.title)
-//                .padding()
-//        }
-//        .navigationTitle("Generate Now")
-//    }
-//}
-//
-//struct SetUpFirstView: View {
-//    var body: some View {
-//        VStack {
-//            Text("Set Up First Screen")
-//                .font(.title)
-//                .padding()
-//        }
-//        .navigationTitle("Set Up First")
-//    }
-//}
-
 #Preview {
     MagicView()
 }

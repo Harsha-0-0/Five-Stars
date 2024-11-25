@@ -6,24 +6,22 @@
 //
 import SwiftUI
 
-
 struct AIDresserView: View {
-    @State private var currentStep: Int = 1 // Track the current step
-    @State private var navigationPath: [Int] = [] // Track navigation history
+    @State private var currentStep: Int = 1 // Current step of the setup process
+
     var body: some View {
-        
-        NavigationStack(path: $navigationPath) {
-            // Show the initial content based on the step
-            ContentChooser(step: currentStep, navigationPath: $navigationPath)
-                .navigationDestination(for: Int.self) { step in
-                    ContentChooser(step: step, navigationPath: $navigationPath)
-                }
-            Spacer()
+        VStack {
+            if currentStep == 1 {
+                AIDresser1Content(onNext: { currentStep = 2 })
+            } else if currentStep == 2 {
+                AIDresser2Content(onBack: { currentStep = 1 }, onNext: { currentStep = 3 })
+            } else if currentStep == 3 {
+                AIDresser3Content(onBack: { currentStep = 2 })
+            }
         }
-        
     }
-    
 }
+
 
 
 struct AIDresserStepView: View {
@@ -112,13 +110,15 @@ struct AIDresserStepView: View {
 
 
 struct AIDresser1Content: View {
+    let onNext: () -> Void
     
     @State var clothesArray: [Image] = []
-    @Binding var navigationPath: [Int]
+//    @Binding var navigationPath: [Int]
     
     var body: some View {
         
         VStack(spacing: 20) {
+            
             
             AIDresserStepView(step: 1)
             Spacer()
@@ -162,8 +162,7 @@ struct AIDresser1Content: View {
             Button(action: {
                 // Action for "Next"
 //                print("Next pressed")
-                navigationPath.append(2)
-//                PageChanger(1)
+                onNext()
             }) {
                 Text("Next")
                     .fontWeight(.medium)
@@ -178,6 +177,7 @@ struct AIDresser1Content: View {
         }
         .background(Color.white)
         .edgesIgnoringSafeArea(.bottom)
+        .padding(.bottom, 20)
         .onAppear {
             clothesArray = AddClothesArray("TShirts") // Populate array on appearance
         }
@@ -191,7 +191,9 @@ struct AIDresser2Content: View {
     let OccasionArr2 = ["Wedding", "Date", "Party"]
     let OccasionArr3 = ["Daily", "Concert", "Bar"]
     @Environment(\.dismiss) var dismiss
-    @Binding var navigationPath: [Int]
+//    @Binding var navigationPath: [Int]
+    let onBack: () -> Void
+        let onNext: () -> Void
 
     
     var body: some View {
@@ -261,7 +263,8 @@ struct AIDresser2Content: View {
                     Button(action: {
                         // Action for "Back"
         //                print(key)
-                        dismiss()
+                        onBack()
+//                        dismiss()
                     }) {
                         Text("Back")
                             .fontWeight(.medium)
@@ -273,7 +276,8 @@ struct AIDresser2Content: View {
                     }
                     Button(action: {
                         // Action for "Next"
-                        navigationPath.append(3)
+                        onNext()
+//                        navigationPath.append(3)
                     }) {
                         Text("Next")
                             .fontWeight(.medium)
@@ -295,8 +299,9 @@ struct AIDresser2Content: View {
 }
 
 struct AIDresser3Content: View {
-    @Binding var navigationPath: [Int]
+//    @Binding var navigationPath: [Int]
     @Environment(\.dismiss) var dismiss
+    let onBack: () -> Void
     var body: some View {
         
         VStack (alignment: .leading, spacing: 40){
@@ -319,7 +324,8 @@ struct AIDresser3Content: View {
                 Button(action: {
                     // Action for "Back"
     //                print(key)
-                    dismiss()
+//                    dismiss()
+                    onBack()
                 }) {
                     Text("Back")
                         .fontWeight(.medium)
@@ -384,20 +390,20 @@ struct step3ButtonsBox: View {
     }
 }
 
-@ViewBuilder
-func ContentChooser(step: Int, navigationPath: Binding<[Int]>) -> some View {
-    switch step {
-    case 1:
-        AIDresser1Content(navigationPath: navigationPath)
-    case 2:
-        AIDresser2Content(navigationPath: navigationPath)
-    case 3:
-        AIDresser3Content(navigationPath: navigationPath)
-    default:
-        Text("Invalid step")
-            .foregroundColor(.red)
-    }
-}
+//@ViewBuilder
+//func ContentChooser(step: Int, navigationPath: Binding<[Int]>) -> some View {
+//    switch step {
+//    case 1:
+//        AIDresser1Content(navigationPath: navigationPath)
+//    case 2:
+//        AIDresser2Content(navigationPath: navigationPath)
+//    case 3:
+//        AIDresser3Content(navigationPath: navigationPath)
+//    default:
+//        Text("Invalid step")
+//            .foregroundColor(.red)
+//    }
+//}
 
 
 
