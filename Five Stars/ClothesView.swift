@@ -46,38 +46,38 @@ struct Clothing: Identifiable {
 @Observable
 class ClothingViewModel {
     private let clothingItems: [String: [Clothing]] = [
-        "Dresses":[
-            Clothing(name: "T-Shirt",
-                     image: "dress_01",
-                     description: "It's a black dress named t-shirt",
-                     category: "Tops",
+        "Pants":[
+            Clothing(name: "Black Pant",
+                     image: "pants_01",
+                     description: "It's a black colored pant",
+                     category: "Pants",
                      quality: "Good",
-                     color: ["Black", "Red"]),
-            Clothing(name: "T-Shirt",
-                     image: "dress_01",
-                     description: "It's a black dress named t-shirt",
-                     category: "Tops",
+                     color: ["Black"]),
+            Clothing(name: "Blue Jean",
+                     image: "pants_02",
+                     description: "It's a blue jean",
+                     category: "Pants",
                      quality: "Good",
-                     color: ["Red"])],
+                     color: ["Blue"])],
         "Shirts":[
-            Clothing(name: "T-Shirt",
-                     image: "dress_02",
-                     description: "It's a black dress named t-shirt",
-                     category: "Bottoms",
+            Clothing(name: "Blue Shirt",
+                     image: "shirt_02",
+                     description: "It's a blue shirt",
+                     category: "Shirts",
                      quality: "Good",
                      color: ["Blue"]),
-            Clothing(name: "dress_02",
-                     image: "BlackDress",
-                     description: "It's a black dress named t-shirt",
-                     category: "Bottoms",
+            Clothing(name: "Blue Shirt",
+                     image: "shirt_01",
+                     description: "It's a blue shirt",
+                     category: "Shirts",
                      quality: "Good",
-                     color: ["White"]),
-            Clothing(name: "dress_03",
-                     image: "BlackDress",
-                     description: "It's a black dress named t-shirt",
-                     category: "Bottoms",
+                     color: ["Blue"]),
+            Clothing(name: "White Shirt",
+                     image: "shirt_03",
+                     description: "It's a white shirt",
+                     category: "Shirts",
                      quality: "Good",
-                     color: ["Black"])]
+                     color: ["White"])]
         
     ]
     

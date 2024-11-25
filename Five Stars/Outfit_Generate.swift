@@ -88,10 +88,10 @@ struct Outfit_Generate: View {
                 ZStack {
                     let rectangleHeight: CGFloat = showSwapTopOptions || showSwapPantOptions || showSwapShoeOptions ? 400 : 500
                     
-                    Rectangle()
-                        .fill(.yellowBg)
-                        .frame(width: 350, height: rectangleHeight)
-                        .cornerRadius(10)
+                    RoundedRectangle(cornerRadius: 20)
+                                            .fill(LinearGradient(gradient: Gradient(colors: [Color.yellow.opacity(0.2), Color.yellow.opacity(0.1)]), startPoint: .top, endPoint: .bottom))
+                                            .shadow(radius: 10, x: 0, y: 5)
+                                            .frame(width: 350, height: rectangleHeight)
                     
                     GeometryReader { innerGeometry in
                         VStack(spacing: -70) {

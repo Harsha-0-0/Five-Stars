@@ -10,55 +10,45 @@ import SwiftUI
 struct ContentView: View {
     
     @State private var selectedTab = 0
+    
     var body: some View {
-        VStack {
+        TabView(selection: $selectedTab) {
+            // Home Tab
+            HomeScreen(selectedTab: $selectedTab) // Pass the binding
+                .tabItem {
+                    Image("home")
+                        .renderingMode(.template)
+                    Text("Home")
+                }
+                .tag(0)
             
+            // Wardrobe Tab
+            FilterView(selectedTab: $selectedTab)
+                .tabItem {
+                    Image("Wardrobe")
+                        .renderingMode(.template)
+                    Text("Wardrobe")
+                }
+                .tag(1)
             
-            TabView(selection: $selectedTab) {
-                // Home Tab
-                HomeScreen()
-                    .tabItem {
-                        Image("home")
-                            .renderingMode(.template)
-                            .foregroundColor(selectedTab == 0 ? .navSelected : .navDefault) // Change color based on selection
-                        Text("Home")
-                    }
-                    .tag(0)
-                
-                // Wardrobe Tab
-                FilterView()
-                    .tabItem {
-                        Image("Wardrobe")
-                            .renderingMode(.template)
-                            .foregroundColor(selectedTab == 1 ? .navSelected : .navDefault) // Change color based on selection
-                        Text("Wardrobe")
-                    }
-                    .tag(1)
-                
-                // Magic Tab
-                MagicView()
-                    .tabItem {
-                        Image("spark")
-                            .renderingMode(.template)
-                            .foregroundColor(selectedTab == 2 ? .navSelected : .navDefault) // Change color based on selection
-                        Text("Magic")
-                    }
-                
-                    .tag(2)
-            }
-            
-            .accentColor(.navSelected)
-            .toolbarBackground(.visible, for: .navigationBar)
-            .accentColor(.navSelected)
+            // Magic Tab
+            Outfit_Generate()
+                .tabItem {
+                    Image("spark")
+                        .renderingMode(.template)
+                    Text("Magic")
+                }
+                .tag(2)
         }
         
-        
+        .accentColor(.accentColor)
     }
 }
-
-
 
 
 #Preview {
     ContentView()
 }
+
+
+
