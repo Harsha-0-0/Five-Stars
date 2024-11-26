@@ -70,11 +70,15 @@ struct Outfit_Generate: View {
     var body: some View {
         GeometryReader { geometry in
             VStack {
+                // Title
                 Text("AI Dresser")
                     .font(.largeTitle)
                     .fontWeight(.bold)
                     .padding(.top, 20)
-                Spacer()
+                
+                Spacer(minLength: 10)
+                
+                // Subtitle
                 Text("Shuffle with the Button, or Manually Swap Specific Pieces by Selecting")
                     .font(.title3)
                     .foregroundStyle(.navDefault)
@@ -82,72 +86,71 @@ struct Outfit_Generate: View {
                     .padding(.horizontal, 20)
                     .lineLimit(2)
                 
-                Spacer().frame(height: 20)
+                Spacer(minLength: 20)
                 
                 // Dynamic Rectangle and Buttons
                 ZStack {
-                    let rectangleHeight: CGFloat = showSwapTopOptions || showSwapPantOptions || showSwapShoeOptions ? 400 : 500
+                    let rectangleHeight: CGFloat = showSwapTopOptions || showSwapPantOptions || showSwapShoeOptions ? 350 : 450
                     
                     Rectangle()
                         .fill(.yellowBg)
-                        .frame(width: 350, height: rectangleHeight)
+                        .frame(width: geometry.size.width * 0.9, height: rectangleHeight)
                         .cornerRadius(10)
                     
-                    GeometryReader { innerGeometry in
-                        VStack(spacing: -70) {
-                            let buttonHeight = rectangleHeight / 2.8
-                            
-                            // Button for shirts
-                            Button {
-                                showSwapTopOptions.toggle()
-                            } label: {
-                                currentCloth?.image
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(height: buttonHeight)
-                                    .clipShape(Rectangle())
-                            }
-                            .onAppear {
-                                model.loadAllCategories()
-                                currentCloth = model.topImage.randomElement()
-                            }
-                            
-                            // Button for pants
-                            Button {
-                                showSwapPantOptions.toggle()
-                            } label: {
-                                currentPant?.image
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(height: buttonHeight)
-                                    .clipShape(Rectangle())
-                            }
-                            .onAppear {
-                                model.loadAllCategories()
-                                currentPant = model.pantsImage.randomElement()
-                            }
-                            
-                            // Button for shoes
-                            Button {
-                                showSwapShoeOptions.toggle()
-                            } label: {
-                                currentShoe?.image
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(height: buttonHeight)
-                                    .clipShape(Rectangle())
-                            }
-                            .onAppear {
-                                model.loadAllCategories()
-                                currentShoe = model.shoesImage.randomElement()
-                            }
+                    VStack(spacing: -60) {
+                        let buttonHeight = rectangleHeight / 2.8
+                        
+                        // Button for shirts
+                        Button {
+                            showSwapTopOptions.toggle()
+                        } label: {
+                            currentCloth?.image
+                                .resizable()
+                                .scaledToFit()
+                                .frame(height: buttonHeight)
+                                .clipShape(Rectangle())
                         }
-                        .frame(width: innerGeometry.size.width, height: innerGeometry.size.height)
+                        .onAppear {
+                            model.loadAllCategories()
+                            currentCloth = model.topImage.randomElement()
+                        }
+                        
+                        // Button for pants
+                        Button {
+                            showSwapPantOptions.toggle()
+                        } label: {
+                            currentPant?.image
+                                .resizable()
+                                .scaledToFit()
+                                .frame(height: buttonHeight)
+                                .clipShape(Rectangle())
+                        }
+                        .onAppear {
+                            model.loadAllCategories()
+                            currentPant = model.pantsImage.randomElement()
+                        }
+                        
+                        // Button for shoes
+                        Button {
+                            showSwapShoeOptions.toggle()
+                        } label: {
+                            currentShoe?.image
+                                .resizable()
+                                .scaledToFit()
+                                .frame(height: buttonHeight)
+                                .clipShape(Rectangle())
+                        }
+                        .onAppear {
+                            model.loadAllCategories()
+                            currentShoe = model.shoesImage.randomElement()
+                        }
                     }
                 }
                 .animation(.easeInOut, value: showSwapTopOptions || showSwapPantOptions || showSwapShoeOptions)
                 
-                // Swap Views
+                Spacer(minLength: 20)
+                
+                // Swap Views (Capped Heights)
                 if showSwapTopOptions {
                     SwapTopView(
                         tops: $model.topImage,
@@ -156,6 +159,7 @@ struct Outfit_Generate: View {
                             currentCloth = newTop
                         }
                     )
+                    .frame(maxHeight: 250) // Cap the height
                     .transition(.move(edge: .bottom))
                 }
                 
@@ -167,6 +171,7 @@ struct Outfit_Generate: View {
                             currentPant = newPant
                         }
                     )
+                    .frame(maxHeight: 250) // Cap the height
                     .transition(.move(edge: .bottom))
                 }
                 
@@ -178,45 +183,37 @@ struct Outfit_Generate: View {
                             currentShoe = newShoe
                         }
                     )
+                    .frame(maxHeight: 250) // Cap the height
                     .transition(.move(edge: .bottom))
                 }
                 
-                Spacer(minLength: 30)
+                Spacer(minLength: 20)
                 
-                // Restart and Shuffle Buttons
-                HStack(spacing: 20) {
-                    Button {
-                        currentCloth = nil
-                        currentPant = nil
-                        currentShoe = nil
-                    } label: {
-                        Label("Restart", systemImage: "arrow.clockwise")
-                            .labelStyle(CustomTextBeforeIconStyle())
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .clipShape(Capsule())
-                    
-                    Button {
-                        currentCloth = model.topImage.randomElement()
-                        currentPant = model.pantsImage.randomElement()
-                        currentShoe = model.shoesImage.randomElement()
-                    } label: {
-                        Label("Shuffle", systemImage: "shuffle")
-                            .labelStyle(CustomTextBeforeIconStyle())
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .clipShape(Capsule())
-                }
-                Spacer(minLength: 60)
-                .padding(.bottom)
+                // Shuffle Button
+                if !showSwapTopOptions && !showSwapPantOptions && !showSwapShoeOptions {
+                                    Button {
+                                        currentCloth = model.topImage.randomElement()
+                                        currentPant = model.pantsImage.randomElement()
+                                        currentShoe = model.shoesImage.randomElement()
+                                    } label: {
+                                        Label("Shuffle", systemImage: "shuffle")
+                                            .fontWeight(.medium)
+                                            .foregroundColor(.white)
+                                            .frame(maxWidth: .infinity)
+                                            .padding()
+                                            .background(Color("Primary"))
+                                            .cornerRadius(100)
+                                    }
+                                    .padding(.horizontal, 20)
+                                    .clipShape(Capsule())
+                                }
+                
+                Spacer(minLength: 30)
             }
-
-            .frame(maxHeight: geometry.size.height)
+            .frame(width: geometry.size.width, height: geometry.size.height) // Ensure it fits within the screen
         }
     }
 }
-
-
 
 
 // MARK: - Swap Pants View

@@ -30,11 +30,11 @@ struct FilterView: View {
                         Spacer()
                         Picker("Category", selection: $selectedCategory) {
                             Text("All").tag("All")
-                            Text("Shirts").tag("Tops")
-                            Text("T-Shirts").tag("Bottoms")
-                            Text("Jackets").tag("Outerwear")
-                            Text("Pants").tag("Bottoms")
-                            Text("Shoes").tag("Footwear")
+                            Text("Shirts").tag("Shirts")
+                            Text("T-Shirts").tag("T-Shirts")
+                            Text("Jackets").tag("Jackets")
+                            Text("Pants").tag("Pants")
+                            Text("Shoes").tag("Shoes")
                         }
                         .pickerStyle(MenuPickerStyle())
                     }
@@ -93,29 +93,29 @@ struct FilterView: View {
                             ForEach(groupedItems.keys.sorted(), id: \.self) { category in
                                 if let items = groupedItems[category] {
                                     Section(header: Text(category).font(.headline).padding(.leading)) {
-                                        LazyVGrid(columns: columns, spacing: 16) {
+                                        LazyVGrid(columns: columns) {
                                             ForEach(items) { item in
                                                 NavigationLink(destination: ItemDetail(item: item)) {
                                                     VStack {
                                                         Image(item.image) // Display the item image
                                                             .resizable()
-                                                            .scaledToFit()
-                                                            .frame(height: 100)
+                                                            .scaledToFill()
+                                                        
                                                             .cornerRadius(8)
                                                     }
-                                                    .padding()
-                                                    .background(Color.green.opacity(0.1))
-                                                    .cornerRadius(10)
+                                                    //                                                    .padding(4)
+                                                    .background(Color.accentColor.opacity(0.1))
+                                                    .cornerRadius(16)
                                                 }
                                             }
                                         }
-                                        .padding(.horizontal)
+                                        .padding(.horizontal, 18)
                                     }
                                 }
                             }
                         }
                     }
-                    .padding()
+                    .padding(.top)
                 }
                 .searchable(text: $searchText, prompt: "Search for clothing...")
                 .navigationTitle("Digital Wardrobe")
@@ -131,71 +131,104 @@ struct ItemDetail: View {
     @State private var selectedColor: String = "Black"
     @State private var selectedSeason: String = "Spring"
     @State private var selectedOccasion: String = "Daily"
-    
+     
     var body: some View {
+        // Main Content
+        VStack(alignment: .leading) {
+            
+            
+            // Spacer()
+        }
+        
         ScrollView {
             VStack(alignment: .leading, spacing: 20) {
-                // Image Section
+                
+                //Image Section
+                
                 Image(item.image)
                     .resizable()
-                    .scaledToFit()
-                    .frame(height: 200)
+                    .scaledToFill()
+                    .frame(height: 400)
                     .background(Color.gray.opacity(0.2))
                     .cornerRadius(8)
-                    .padding()
                 
-                // Name Section
-                Text(item.name)
-                    .font(.largeTitle)
-                    .bold()
-                    .padding(.leading, 15)
+                //.padding()
                 
-                // Description Section
-                Text(item.description)
-                    .font(.body)
-                    .padding(.horizontal)
+                VStack(alignment: .leading, spacing: 4) {
+                    // Name Section
+                    Text(item.name)
+                        .font(.title)
+                        .bold()
+                    //.padding(.leading, 15)
+                    
+                    // Description Section
+                    Text(item.description)
+                        .font(.body)
+                    //.padding(.horizontal)
+                }
                 
                 Divider()
                 
                 // Category Section
-                VStack(alignment: .leading) {
-                    Text("Category")
-                        .font(.headline)
-                    Text(item.category)
-                        .foregroundColor(.blue)
-                }
-                .padding(.horizontal)
+                
                 
                 // Color Section
                 VStack(alignment: .leading) {
-                    Text("Color")
-                        .font(.headline)
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 10) {
-                            ForEach(item.color, id: \.self) { color in
-                                Text(color)
-                                    .padding()
-                                    .background(selectedColor == color ? Color.gray.opacity(0.2) : Color.clear)
-                                    .cornerRadius(8)
-                                    .onTapGesture {
-                                        selectedColor = color
-                                    }
-                            }
-                        }
+                    Text("Properties")
+                        .font(.title3)
+                        .bold()
+                    
+                    HStack {
+                        Text("Category")
+                            .font(.headline)
+                            .padding(.top, 8)
+                        
+                        Spacer()
+                        
+                        Text(item.category)
+                            .foregroundColor(.accent)
+                            .padding(.top, 2)
+                            //.bold()
+                        
                     }
-                }
-                .padding(.horizontal)
-                
-                // Season Section
-                VStack(alignment: .leading) {
+                    
+                    HStack {
+                        Text("Quality")
+                            .font(.headline)
+                            .padding(.top, 8)
+                        
+                        Spacer()
+                        
+                        Text(item.quality)
+                            .foregroundColor(.accent)
+                            .padding(.top, 2)
+                            //.bold()
+                        
+                    }
+                        
+                    HStack {
+                        Text("Color")
+                            .font(.headline)
+                            .padding(.top, 8)
+                        
+                        Spacer()
+                        
+                        Text(item.color)
+                            .foregroundColor(.accent)
+                            .padding(.top, 2)
+                            //.bold()
+                        
+                    }
+                    
                     Text("Season")
                         .font(.headline)
+                        .padding(.top, 4)
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 10) {
                             ForEach(item.seasonOptions, id: \.self) { season in
                                 Text(season)
                                     .padding()
-                                    .background(selectedSeason == season ? Color.gray.opacity(0.2) : Color.clear)
+                                    .background(selectedSeason == season ? Color.accentColor.opacity(0.2) : Color.gray.opacity(0.1))
                                     .cornerRadius(8)
                                     .onTapGesture {
                                         selectedSeason = season
@@ -203,19 +236,16 @@ struct ItemDetail: View {
                             }
                         }
                     }
-                }
-                .padding(.horizontal)
-                
-                // Occasion Section
-                VStack(alignment: .leading) {
+                    
                     Text("Occasions")
                         .font(.headline)
+                        .padding(.top, 8)
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 10) {
                             ForEach(item.occasionOptions, id: \.self) { occasion in
                                 Text(occasion)
                                     .padding()
-                                    .background(selectedOccasion == occasion ? Color.gray.opacity(0.2) : Color.clear)
+                                    .background(selectedOccasion == occasion ? Color.accentColor.opacity(0.2) : Color.gray.opacity(0.1))
                                     .cornerRadius(8)
                                     .onTapGesture {
                                         selectedOccasion = occasion
@@ -224,11 +254,13 @@ struct ItemDetail: View {
                         }
                     }
                 }
-                .padding(.horizontal)
+                //.padding(.horizontal)
             }
-            .padding(.bottom, 20)
+            .padding(.horizontal, 20)
             .navigationTitle("Clothes Details")
         }
+        
+        Spacer()
     }
 }
 
